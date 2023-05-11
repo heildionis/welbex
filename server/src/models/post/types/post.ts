@@ -1,4 +1,4 @@
-import { Document } from 'mongoose';
+import { Document, Schema } from 'mongoose';
 
 export interface Post {
 	date: Date;
@@ -7,4 +7,6 @@ export interface Post {
 	media?: string;
 }
 
-export interface PostModelSchema extends Post, Document {}
+export interface PostModelSchema extends Omit<Post, 'author'>, Document {
+	author: Schema.Types.ObjectId;
+}

@@ -1,96 +1,126 @@
 import { hashSync, compare, genSaltSync } from 'bcrypt';
-import { v4 as generateIdV4 } from 'uuid';
 
 import { UserDto } from '../dtos/user.dto.js';
 import { ApiError } from '../exception/ApiError.js';
 import { UserModel } from '../models/user/index.js';
-import { tokenService } from './token.service.js';
+import { TokenService } from './token.service.js';
+import { UserErrors } from '../exception/constants/user.errors.js';
+import { Tokens } from '../models/token/index.js';
+import { Schema } from 'mongoose';
 
-class UserService {
-	async registration(email: string, password: string) {
-		const candidate = await UserModel.findOne({ email });
-		if (candidate) {
-			throw ApiError.badRequest(
-				`Пользователь с почтовым адресом ${email} уже существует`
-			);
+interface UserData extends Tokens {
+	user: UserDto;
+}
+
+export class UserService {
+	public static async registration(
+		email: string,
+		password: string,
+		username: string
+	): Promise<UserData> {
+		const candidateWithEmail = await UserModel.findOne({ email });
+		const candidateWithUsername = await UserModel.findOne({ username });
+		if (candidateWithEmail || candidateWithUsername) {
+			throw ApiError.badRequest(UserErrors.USER_EXIST);
 		}
 
 		const salt = genSaltSync(5);
 		const hashPassword = hashSync(password, salt);
-		const activationLink = generateIdV4();
 
 		const user = await UserModel.create({
 			email,
 			password: hashPassword,
-			activationLink,
+			username,
 		});
 		const userDto = new UserDto(user);
 
-		const tokens = tokenService.generateTokens({ ...userDto });
-		if (!tokens) {
-			throw ApiError.notFound('TOKENS NOT FOUND');
-		}
-		await tokenService.saveToken(user.id, tokens.refreshToken);
+		const tokens = TokenService.generateTokens({ ...userDto });
+
+		await TokenService.saveToken(user.id, tokens.refreshToken);
 
 		return {
 			...tokens,
 			user: userDto,
 		};
 	}
-	async login(email: string, password: string) {
+
+	public static async login(
+		email: string,
+		password: string
+	): Promise<UserData> {
 		const candidate = await UserModel.findOne({ email });
 		if (!candidate) {
-			throw ApiError.badRequest('Пользователь с таким email не найден');
+			throw ApiError.badRequest(UserErrors.USER_NOT_FOUND);
 		}
 
 		const isCorrectPassword = compare(password, candidate.password);
 		if (!isCorrectPassword) {
-			throw ApiError.badRequest('Неверный пароль');
+			throw ApiError.badRequest(UserErrors.INCORRECT_AUTHDATA);
 		}
 
 		const userDto = new UserDto(candidate);
-		const tokens = tokenService.generateTokens({ ...userDto });
-		if (!tokens) {
-			throw ApiError.notFound('TOKENS NOT FOUND');
-		}
-		await tokenService.saveToken(userDto.id, tokens.refreshToken);
+		const tokens = TokenService.generateTokens({ ...userDto });
+
+		await TokenService.saveToken(userDto.id, tokens.refreshToken);
 
 		return {
 			...tokens,
 			user: userDto,
 		};
 	}
-	async logout(refreshToken: string) {
-		const token = await tokenService.removeToken(refreshToken);
-		return token;
+
+	public static async logout(refreshToken: string) {
+		await TokenService.removeToken(refreshToken);
 	}
-	async refresh(refreshToken: string) {
+
+	public static async refresh(refreshToken: string): Promise<UserData> {
 		if (!refreshToken) {
 			throw ApiError.unauthorized();
 		}
-		const userData = tokenService.validateRefreshToken(refreshToken);
-		const token = await tokenService.findToken(refreshToken);
+
+		const userData = TokenService.validateRefreshToken(refreshToken);
+		const token = await TokenService.findToken(refreshToken);
 
 		if (!userData || !token) {
 			throw ApiError.unauthorized();
 		}
+
 		if (typeof userData === 'string') {
 			throw ApiError.unauthorized();
 		}
-		const user = await UserModel.findById(userData.id);
-		const userDto = new UserDto(user);
-		const tokens = tokenService.generateTokens({ ...userDto });
 
-		if (!tokens) {
-			throw ApiError.notFound('TOKENS NOT FOUND');
+		const user = await UserModel.findById(userData.id);
+
+		if (!user) {
+			throw ApiError.notFound(UserErrors.USER_NOT_FOUND);
 		}
-		await tokenService.saveToken(userDto.id, tokens?.refreshToken);
+
+		const userDto = new UserDto(user);
+		const tokens = TokenService.generateTokens({ ...userDto });
+
+		await TokenService.saveToken(userDto.id, tokens?.refreshToken);
 
 		return {
 			...tokens,
 			user: userDto,
 		};
 	}
-}
 
-export const userService = new UserService();
+	public static async findUserByName(username: string) {
+		const user = await UserModel.findOne({ username });
+		if (!user) {
+			throw ApiError.notFound(UserErrors.USER_NOT_FOUND);
+		}
+
+		return user;
+	}
+
+	public static async findUserById(id: Schema.Types.ObjectId) {
+		const user = await UserModel.findById(id);
+		if (!user) {
+			throw ApiError.notFound(UserErrors.USER_NOT_FOUND);
+		}
+
+		return user;
+	}
+}

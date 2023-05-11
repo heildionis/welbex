@@ -1,34 +1,30 @@
 import jwt from 'jsonwebtoken';
 import dotenv from 'dotenv';
 
-import { TokenModel, Tokens } from '../models/token/index.js';
+import { TokenModel, TokenModelSchema, Tokens } from '../models/token/index.js';
+import { ApiError } from '../exception/ApiError.js';
 
 dotenv.config();
 
-// Secret keys for access key and refresh key
-// Enter JWT_ACCESS_SECRET and JWT_REFRESH_SECRET in .env file
+const accessKey = process.env.JWT_ACCESS_SECRET || 'secret_access';
+const refreshKey = process.env.JWT_REFRESH_SECRET || 'secret_refresh';
 
-const accessKey = process.env.JWT_ACCESS_SECRET || '12345678';
-const refreshKey = process.env.JWT_REFRESH_SECRET || '12345';
-
-// Class which manipulating with JWT tokens and DB
-class TokenService {
-	// Generating access token and refresh token
-	generateTokens(payload: any): Tokens {
-		// Generating new JWT tokens
+export class TokenService {
+	public static generateTokens(payload: any): Tokens {
 		const accessToken = jwt.sign(payload, accessKey, { expiresIn: '1d' });
 		const refreshToken = jwt.sign(payload, refreshKey, {
 			expiresIn: '30d',
 		});
 
-		// Returning tokens
 		return {
 			accessToken,
 			refreshToken,
 		};
 	}
-	// Validating access token
-	validateAccessToken(token: string) {
+
+	public static validateAccessToken(
+		token: string
+	): string | jwt.JwtPayload | null {
 		try {
 			const userData = jwt.verify(token, accessKey);
 			return userData;
@@ -36,8 +32,10 @@ class TokenService {
 			return null;
 		}
 	}
-	// Validating refresh token
-	validateRefreshToken(token: string) {
+
+	public static validateRefreshToken(
+		token: string
+	): string | jwt.JwtPayload | null {
 		try {
 			const userData = jwt.verify(token, refreshKey);
 			return userData;
@@ -45,32 +43,38 @@ class TokenService {
 			return null;
 		}
 	}
-	// Saving refresh token in DB
-	async saveToken(userId: string, refreshToken: string) {
-		// Finding token and saving it in DB
+
+	public static async saveToken(
+		userId: string,
+		refreshToken: string
+	): Promise<TokenModelSchema> {
 		const tokenData = await TokenModel.findById(userId);
 		if (tokenData) {
 			tokenData.token = refreshToken;
 			return tokenData.save();
 		}
 
-		// Creating token if it doesnt exist
 		const token = await TokenModel.create({
 			user: userId,
 			token: refreshToken,
 		});
+
 		return token;
 	}
-	// Removing refresh token from DB
-	async removeToken(refreshToken: string) {
-		// Removing token from DB
-		const tokenData = await TokenModel.deleteOne({ token: refreshToken });
-		return tokenData;
+
+	public static async removeToken(refreshToken: string) {
+		await TokenModel.deleteOne({ token: refreshToken });
 	}
-	// Finding refresh token in DB
-	async findToken(refreshToken: string) {
-		// Finding token in DB
+
+	public static async findToken(
+		refreshToken: string
+	): Promise<TokenModelSchema> {
 		const tokenData = await TokenModel.findOne({ token: refreshToken });
+
+		if (!tokenData) {
+			throw ApiError.unauthorized();
+		}
+
 		return tokenData;
 	}
 }

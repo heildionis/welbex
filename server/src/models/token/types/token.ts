@@ -1,5 +1,4 @@
-import { Document } from 'mongoose';
-import { UserModelSchema } from '../../user/index.js';
+import { Document, Schema } from 'mongoose';
 
 export interface Tokens {
 	accessToken: string;
@@ -7,7 +6,7 @@ export interface Tokens {
 }
 
 export interface Token {
-	user: UserModelSchema;
+	user: Schema.Types.ObjectId;
 	token: string;
 }
 

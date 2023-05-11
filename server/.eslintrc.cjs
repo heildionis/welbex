@@ -3,7 +3,13 @@ module.exports = {
 		browser: true,
 		es2021: true,
 	},
-	extends: ['eslint:recommended', 'plugin:@typescript-eslint/recommended'],
+	extends: [
+		'eslint:recommended',
+		'plugin:@typescript-eslint/recommended',
+		'airbnb',
+		'prettier',
+		'plugin:import/recommended',
+	],
 	overrides: [],
 	parser: '@typescript-eslint/parser',
 	parserOptions: {
@@ -19,5 +25,10 @@ module.exports = {
 		'no-undef': 'warn',
 		'no-unused-vars': 'off',
 		'unused-imports/no-unused-imports': 'error',
+		'import/prefer-default-export': 'off',
+		'import/extensions': ['off', 'always', { ignorePackages: true }],
+		'import/no-unresolved': 'off',
+		'consistent-return': 'warn',
+		'no-underscore-dangle': 'off',
 	},
 };

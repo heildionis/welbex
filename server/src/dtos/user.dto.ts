@@ -1,14 +1,11 @@
-// User Data Transfer Object
-export class UserDto {
-	email: string;
-	id: string;
-	isActivated: boolean;
-	role: string;
+import { UserModelSchema } from '../models/user/index.js';
 
-	constructor(model: any) {
-		this.email = model.email;
+export class UserDto {
+	username: string;
+	id: string;
+
+	constructor(model: UserModelSchema) {
 		this.id = model._id;
-		this.isActivated = model.isActivated;
-		this.role = model.role;
+		this.username = model.username;
 	}
 }

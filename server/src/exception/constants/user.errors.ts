@@ -1,0 +1,5 @@
+export const UserErrors = {
+	USER_NOT_FOUND: 'USER_NOT_FOUND',
+	INCORRECT_AUTHDATA: 'INCORRECT_AUTH_DATA',
+	USER_EXIST: 'USER_EXIST',
+} as const;

@@ -1,10 +1,9 @@
 import { Router } from 'express';
 import { postRouter } from './post.router.js';
+import { userRouter } from './user.router.js';
+import { authMiddleware } from '../middlewares/auth.middleware.js';
 
 export const router = Router();
 
-router.get('/', (req, res) => {
-	return res.send({ message: 'hello' });
-});
-
-router.use('/posts', postRouter);
+router.use('/posts', authMiddleware, postRouter);
+router.use('/users', userRouter);

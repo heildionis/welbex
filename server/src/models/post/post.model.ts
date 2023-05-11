@@ -4,7 +4,7 @@ import { PostModelSchema } from './types/post.js';
 const postSchema = new Schema<PostModelSchema>({
 	date: { type: Date, required: true },
 	message: { type: String, required: true },
-	author: { type: String, required: true },
+	author: { type: Schema.Types.ObjectId, ref: 'user', required: true },
 	media: { type: String, required: false },
 });
 

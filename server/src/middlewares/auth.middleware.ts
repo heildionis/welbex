@@ -1,9 +1,13 @@
-import { NextFunction, Response } from 'express';
+import { NextFunction, Request, Response } from 'express';
 
 import { ApiError } from '../exception/ApiError.js';
-import { tokenService } from '../services/token.service.js';
+import { TokenService } from '../services/token.service.js';
 
-export const authMiddleware = (req: any, res: Response, next: NextFunction) => {
+export const authMiddleware = (
+	req: Request,
+	res: Response,
+	next: NextFunction
+) => {
 	try {
 		const authorizationHeader = req.headers.authorization;
 		if (!authorizationHeader) {
@@ -15,9 +19,8 @@ export const authMiddleware = (req: any, res: Response, next: NextFunction) => {
 			return next(ApiError.unauthorized());
 		}
 
-		const userData = tokenService.validateAccessToken(accessToken);
+		TokenService.validateAccessToken(accessToken);
 
-		req.user = userData;
 		next();
 	} catch (e) {
 		return next(ApiError.unauthorized());
