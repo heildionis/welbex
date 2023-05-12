@@ -37,7 +37,6 @@ module.exports = {
 		'react/function-component-definition': 'off',
 		'react/no-array-index-key': 'warn',
 		'react/destructuring-assignment': 'warn',
-		'no-shadow': 'off',
 		'import/order': [
 			'error',
 			{
