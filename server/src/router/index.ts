@@ -5,5 +5,5 @@ import { authMiddleware } from '../middlewares/auth.middleware.js';
 
 export const router = Router();
 
-router.use('/posts', authMiddleware, postRouter);
+router.use('/posts', postRouter);
 router.use('/users', userRouter);

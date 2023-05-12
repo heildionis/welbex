@@ -2,7 +2,7 @@ import { Document, Schema } from 'mongoose';
 
 export interface Post {
 	date: Date;
-	message: string;
+	message?: string;
 	author: string;
 	media?: string;
 }

@@ -50,11 +50,11 @@ export class PostService {
 		await PostModel.findByIdAndDelete(postId);
 	}
 
-	public static async getPosts({ limit = 20, page = 1 }: PaginateOptions) {
-		const posts = await PostModel.find({})
-			.skip(page * limit)
-			.limit(limit);
-
+	public static async getPosts({ limit = 20, page = 0 }: PaginateOptions) {
+		const posts = await PostModel.find()
+			.limit(limit)
+			.skip(page * limit);
+		const count = await PostModel.count();
 		const postDtos: PostDto[] = [];
 
 		for (const post of posts) {
@@ -69,6 +69,6 @@ export class PostService {
 			postDtos.push(postDto);
 		}
 
-		return postDtos;
+		return { posts: postDtos, count };
 	}
 }

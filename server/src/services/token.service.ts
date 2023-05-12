@@ -63,7 +63,10 @@ export class TokenService {
 	}
 
 	public static async removeToken(refreshToken: string) {
-		await TokenModel.deleteOne({ token: refreshToken });
+		const tokenDeleteResult = await TokenModel.deleteOne({
+			token: refreshToken,
+		});
+		return tokenDeleteResult;
 	}
 
 	public static async findToken(

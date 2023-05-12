@@ -14,13 +14,11 @@ interface UserData extends Tokens {
 
 export class UserService {
 	public static async registration(
-		email: string,
 		password: string,
 		username: string
 	): Promise<UserData> {
-		const candidateWithEmail = await UserModel.findOne({ email });
 		const candidateWithUsername = await UserModel.findOne({ username });
-		if (candidateWithEmail || candidateWithUsername) {
+		if (candidateWithUsername) {
 			throw ApiError.badRequest(UserErrors.USER_EXIST);
 		}
 
@@ -28,7 +26,6 @@ export class UserService {
 		const hashPassword = hashSync(password, salt);
 
 		const user = await UserModel.create({
-			email,
 			password: hashPassword,
 			username,
 		});
@@ -45,10 +42,10 @@ export class UserService {
 	}
 
 	public static async login(
-		email: string,
+		username: string,
 		password: string
 	): Promise<UserData> {
-		const candidate = await UserModel.findOne({ email });
+		const candidate = await UserModel.findOne({ username });
 		if (!candidate) {
 			throw ApiError.badRequest(UserErrors.USER_NOT_FOUND);
 		}
@@ -70,7 +67,12 @@ export class UserService {
 	}
 
 	public static async logout(refreshToken: string) {
-		await TokenService.removeToken(refreshToken);
+		if (!refreshToken) {
+			throw ApiError.unauthorized();
+		}
+
+		const token = await TokenService.removeToken(refreshToken);
+		return token;
 	}
 
 	public static async refresh(refreshToken: string): Promise<UserData> {
