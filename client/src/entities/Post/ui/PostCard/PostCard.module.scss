@@ -1,0 +1,14 @@
+.PostCard {
+    width: 100%;
+}
+
+.image {
+    max-height: 400px;
+    object-fit: cover;
+}
+
+.inputMsg {
+    width: 100%;
+    min-height: 200px !important;
+    resize: none !important;
+}
