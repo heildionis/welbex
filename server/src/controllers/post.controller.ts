@@ -1,13 +1,9 @@
 import { Response, NextFunction, Request } from 'express';
 import { PostService } from '../services/post.service.js';
-import { Post, PostModelSchema } from '../models/post';
+import { PostModelSchema } from '../models/post/index.js';
 import { UserService } from '../services/user.service.js';
 import { ApiError } from '../exception/ApiError.js';
 import { PaginateOptions } from '../types/paginate.js';
-
-interface ParamsWithId {
-	id: string;
-}
 
 export class PostController {
 	public static async createPost(
@@ -23,7 +19,7 @@ export class PostController {
 
 			const newPost: Partial<PostModelSchema> = {
 				date,
-				message,
+				message: message ? message : '',
 				author: user.id,
 				media: media ? media.filename : undefined,
 			};
@@ -54,7 +50,7 @@ export class PostController {
 
 			const updatedPost: Partial<PostModelSchema> = {
 				date,
-				message,
+				message: message ? message : '',
 				author: user.id,
 				media: media ? media.filename : undefined,
 			};
@@ -72,7 +68,7 @@ export class PostController {
 	}
 
 	public static async deletePost(
-		req: Request<ParamsWithId>,
+		req: Request,
 		res: Response,
 		next: NextFunction
 	): Promise<Response | void> {
@@ -92,16 +88,15 @@ export class PostController {
 		next: NextFunction
 	) {
 		try {
-			const { page = 1, limit = 20 } = req.query;
+			const { page = 0, limit = 20 } = req.query;
 
 			const options: PaginateOptions = {
 				page: parseInt(page as string, 10),
 				limit: parseInt(limit as string, 10),
 			};
 
-			const posts = await PostService.getPosts(options);
-
-			return res.json(posts);
+			const postsWithCount = await PostService.getPosts(options);
+			return res.json(postsWithCount);
 		} catch (error) {
 			next(error);
 		}

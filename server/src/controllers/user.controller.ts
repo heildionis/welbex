@@ -25,21 +25,17 @@ export class UserController {
 				);
 			}
 
-			const { email, password, username } = req.body;
-			const userData = await UserService.registration(
-				email,
-				password,
-				username
-			);
+			const { password, username } = req.body;
+			const userData = await UserService.registration(password, username);
 
-			res.cookie('refreshToken', userData?.refreshToken, {
+			res.cookie('refreshToken', userData.refreshToken, {
 				maxAge: 30 * 24 * 60 * 60 * 1000,
 				httpOnly: true,
 			});
 
 			return res.json(userData);
 		} catch (error) {
-			next(error);
+			return next(error);
 		}
 	}
 
@@ -49,8 +45,8 @@ export class UserController {
 		next: NextFunction
 	): Promise<Response | void> {
 		try {
-			const { email, password } = req.body;
-			const userData = await UserService.login(email, password);
+			const { username, password } = req.body;
+			const userData = await UserService.login(username, password);
 
 			res.cookie('refreshToken', userData?.refreshToken, {
 				maxAge: 30 * 24 * 60 * 60 * 1000,
@@ -59,7 +55,7 @@ export class UserController {
 
 			return res.json(userData);
 		} catch (error) {
-			next(error);
+			return next(error);
 		}
 	}
 
@@ -67,14 +63,17 @@ export class UserController {
 		req: Request,
 		res: Response,
 		next: NextFunction
-	): Promise<void> {
+	) {
 		try {
 			const { refreshToken } = req.cookies;
-			await UserService.logout(refreshToken);
-
-			res.clearCookie('refreshToken');
+			const deleteResult = await UserService.logout(refreshToken);
+			res.clearCookie('refreshToken', {
+				sameSite: 'none',
+				secure: true,
+			});
+			return res.json(deleteResult);
 		} catch (error) {
-			next(error);
+			return next(error);
 		}
 	}
 
@@ -94,7 +93,7 @@ export class UserController {
 
 			return res.json(userData);
 		} catch (error) {
-			next(error);
+			return next(error);
 		}
 	}
 }
