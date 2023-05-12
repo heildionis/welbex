@@ -6,7 +6,7 @@ export class PostDto {
 
 	date: Date;
 
-	message: string;
+	message?: string;
 	author: string;
 
 	media?: string;
