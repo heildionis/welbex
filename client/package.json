@@ -4,6 +4,7 @@
 	"main": "index.js",
 	"license": "MIT",
 	"scripts": {
+		"deploy": "npm run build:prod && npm run start",
 		"start": "webpack serve --env port=3000",
 		"start:dev": "concurrently \"npm run start\" \"npm run start:dev:server\"",
 		"start:dev:server": "node ./json-server/index.js",
