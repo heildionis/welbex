@@ -48,6 +48,10 @@ export class PostController {
 				throw ApiError.notFound();
 			}
 
+			if (!message && !media) {
+				throw ApiError.notAcceptable();
+			}
+
 			const updatedPost: Partial<PostModelSchema> = {
 				date,
 				message: message ? message : '',

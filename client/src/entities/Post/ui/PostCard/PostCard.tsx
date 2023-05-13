@@ -1,4 +1,4 @@
-import { Card, Form, Input, Row, Space, Typography } from 'antd';
+import { Card, Input, Row, Space, Typography } from 'antd';
 import Text from 'antd/es/typography/Text';
 import { ChangeEvent, FC, ReactNode, memo, useCallback } from 'react';
 
@@ -34,22 +34,14 @@ export const PostCard: FC<PostCardProps> = memo((props: PostCardProps) => {
 	const renderMessage = useCallback(() => {
 		if (onChangeMessage) {
 			return (
-				<Form.Item
-					name='message'
-					initialValue={post.message}
-					rules={[
-						{ required: true, message: 'Введите текст записи!' },
-					]}
-				>
-					<Input.TextArea
-						defaultValue={post.message}
-						value={post.message}
-						onChange={onChangeMessage}
-						className={cls.inputMsg}
-						readOnly={readonly || isLoading}
-						disabled={readonly || isLoading}
-					/>
-				</Form.Item>
+				<Input.TextArea
+					defaultValue={post.message}
+					value={post.message}
+					onChange={onChangeMessage}
+					className={cls.inputMsg}
+					readOnly={readonly || isLoading}
+					disabled={readonly || isLoading}
+				/>
 			);
 		}
 
