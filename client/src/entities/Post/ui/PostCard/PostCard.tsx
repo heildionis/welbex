@@ -73,7 +73,7 @@ export const PostCard: FC<PostCardProps> = memo((props: PostCardProps) => {
 			cover={
 				(post.media || media) && (
 					<LazyImage
-						src={`http://localhost:5000/uploads/${post.media}`}
+						src={`${__API__}/uploads/${post.media}`}
 						className={cls.image}
 					/>
 				)
