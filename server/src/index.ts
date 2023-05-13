@@ -27,7 +27,7 @@ const uploadsPath = path.join(__dirname, '..', 'uploads');
 
 // Middlewares
 app.use(morgan('dev'));
-app.use(cors({ origin: ORIGIN, credentials: true }));
+app.use(cors({ origin: '*', credentials: true }));
 app.use(cookieParser());
 app.use(express.json());
 app.use('/api', router);
