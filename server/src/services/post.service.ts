@@ -50,13 +50,19 @@ export class PostService {
 		await PostModel.findByIdAndDelete(postId);
 	}
 
-	public static async getPosts({ limit = 20, page = 0 }: PaginateOptions) {
+	public static async getPosts({
+		limit = 20,
+		page = 0,
+	}: PaginateOptions): Promise<{ posts: PostDto[]; count: number }> {
+		// Find current page and get total count of posts
 		const posts = await PostModel.find()
 			.limit(limit)
 			.skip(page * limit);
 		const count = await PostModel.count();
+
 		const postDtos: PostDto[] = [];
 
+		// Creating post data transfer object
 		for (const post of posts) {
 			const user = await UserService.findUserById(post.author);
 			const author = user?.username;

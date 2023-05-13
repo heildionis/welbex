@@ -2,7 +2,7 @@ import { hashSync, compare, genSaltSync } from 'bcrypt';
 
 import { UserDto } from '../dtos/user.dto.js';
 import { ApiError } from '../exception/ApiError.js';
-import { UserModel } from '../models/user/index.js';
+import { UserModel, UserModelSchema } from '../models/user/index.js';
 import { TokenService } from './token.service.js';
 import { UserErrors } from '../exception/constants/user.errors.js';
 import { Tokens } from '../models/token/index.js';
@@ -71,8 +71,8 @@ export class UserService {
 			throw ApiError.unauthorized();
 		}
 
-		const token = await TokenService.removeToken(refreshToken);
-		return token;
+		const tokenDeleteResult = await TokenService.removeToken(refreshToken);
+		return tokenDeleteResult;
 	}
 
 	public static async refresh(refreshToken: string): Promise<UserData> {
@@ -108,7 +108,9 @@ export class UserService {
 		};
 	}
 
-	public static async findUserByName(username: string) {
+	public static async findUserByName(
+		username: string
+	): Promise<UserModelSchema> {
 		const user = await UserModel.findOne({ username });
 		if (!user) {
 			throw ApiError.notFound(UserErrors.USER_NOT_FOUND);
@@ -117,7 +119,9 @@ export class UserService {
 		return user;
 	}
 
-	public static async findUserById(id: Schema.Types.ObjectId) {
+	public static async findUserById(
+		id: Schema.Types.ObjectId
+	): Promise<UserModelSchema> {
 		const user = await UserModel.findById(id);
 		if (!user) {
 			throw ApiError.notFound(UserErrors.USER_NOT_FOUND);
