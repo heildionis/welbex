@@ -12,6 +12,7 @@ export const buildPlugins = ({
 	isDev,
 	apiUrl,
 	project,
+	uploadUrl,
 }: BuildOptions): webpack.WebpackPluginInstance[] => {
 	const isProd = !isDev;
 
@@ -25,6 +26,7 @@ export const buildPlugins = ({
 			__IS_DEV__: JSON.stringify(isDev),
 			__API__: JSON.stringify(apiUrl),
 			__PROJECT__: JSON.stringify(project),
+			__UPLOADS__: JSON.stringify(uploadUrl),
 		}),
 		new ForkTsCheckerWebpackPlugin({
 			typescript: {

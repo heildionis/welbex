@@ -16,8 +16,8 @@ export default (env: BuildEnv) => {
 	const mode = env?.mode || 'development';
 	const PORT = env?.port || 3000;
 	const apiUrl = env?.apiUrl || 'http://localhost:5000/api';
+	const uploadUrl = env.uploadUrl || 'http://localhost:5000';
 
-	console.log('API_URL:', apiUrl);
 	const isDev = mode === 'development';
 
 	const config: webpack.Configuration = buildWebpackConfig({
@@ -27,6 +27,7 @@ export default (env: BuildEnv) => {
 		port: PORT,
 		apiUrl,
 		project: 'production',
+		uploadUrl,
 	});
 
 	return config;
