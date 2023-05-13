@@ -94,7 +94,6 @@ const AuthForm: FC<AuthFormProps> = memo((props: AuthFormProps) => {
 								size='large'
 								placeholder='Введите имя пользователя...'
 								type='text'
-								formNoValidate
 							/>
 						</Col>
 						<Col span={24}>
@@ -106,7 +105,6 @@ const AuthForm: FC<AuthFormProps> = memo((props: AuthFormProps) => {
 								type='password'
 								size='large'
 								placeholder='Введите пароль...'
-								formNoValidate
 							/>
 						</Col>
 					</Row>
