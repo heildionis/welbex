@@ -48,6 +48,10 @@ export class UserController {
 	): Promise<Response | void> {
 		try {
 			const { username, password } = req.body;
+			if (!username || !password) {
+				throw ApiError.badRequest(ValidationErrors.VALIDATION_ERROR);
+			}
+
 			const userData = await UserService.login(username, password);
 
 			res.cookie('refreshToken', userData?.refreshToken, {
