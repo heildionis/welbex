@@ -8,6 +8,7 @@
 		"allowJs": true,
 		"strict": true,
 		"moduleResolution": "nodenext",
+		"resolveJsonModule": true,
 		"esModuleInterop": true,
 		"allowSyntheticDefaultImports": true
 	},

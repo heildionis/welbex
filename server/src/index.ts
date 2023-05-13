@@ -6,10 +6,10 @@ import cors from 'cors';
 import cookieParser from 'cookie-parser';
 import mongoose from 'mongoose';
 import path, { dirname } from 'path';
+import { fileURLToPath } from 'url';
 
 import { router } from './router/index.js';
 import { errorMiddleware } from './middlewares/error.middleware.js';
-import { fileURLToPath } from 'url';
 
 dotenv.config();
 
