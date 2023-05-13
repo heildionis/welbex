@@ -31,6 +31,12 @@ export class PostService {
 			throw ApiError.notFound();
 		}
 
+		const currentPost = await PostModel.findById(postId);
+
+		if (!updatedPost.media && !updatedPost.message && !currentPost?.media) {
+			throw ApiError.notAcceptable();
+		}
+
 		const updatedPostData = await PostModel.findByIdAndUpdate(
 			postId,
 			updatedPost,
