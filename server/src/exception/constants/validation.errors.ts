@@ -1,3 +1,3 @@
 export const ValidationErrors = {
-	VALIDATION_ERROR: 'VALIDATION ERROR',
+	VALIDATION_ERROR: 'VALIDATION_ERROR',
 } as const;
