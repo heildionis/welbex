@@ -110,7 +110,11 @@ const AuthForm: FC<AuthFormProps> = memo((props: AuthFormProps) => {
 							/>
 						</Col>
 					</Row>
-					{error && <Typography>{AuthEnum[error.data]}</Typography>}
+					{error && (
+						<Typography.Text type='danger'>
+							{AuthEnum[error.data]}
+						</Typography.Text>
+					)}
 					<Divider />
 					<Button
 						onClick={onAuthClick}
