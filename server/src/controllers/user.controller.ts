@@ -49,7 +49,9 @@ export class UserController {
 		try {
 			const { username, password } = req.body;
 			if (!username || !password) {
-				throw ApiError.badRequest(ValidationErrors.VALIDATION_ERROR);
+				return next(
+					ApiError.badRequest(ValidationErrors.VALIDATION_ERROR)
+				);
 			}
 
 			const userData = await UserService.login(username, password);
