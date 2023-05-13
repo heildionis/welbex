@@ -1,4 +1,4 @@
-import { hashSync, compare, genSaltSync } from 'bcrypt';
+import { hashSync, compare, genSaltSync, compareSync } from 'bcrypt';
 
 import { UserDto } from '../dtos/user.dto.js';
 import { ApiError } from '../exception/ApiError.js';
@@ -50,7 +50,10 @@ export class UserService {
 			throw ApiError.badRequest(UserErrors.USER_NOT_FOUND);
 		}
 
-		const isCorrectPassword = compare(password, candidate.password);
+		const isCorrectPassword = await compareSync(
+			password,
+			candidate.password
+		);
 		if (!isCorrectPassword) {
 			throw ApiError.badRequest(UserErrors.INCORRECT_AUTHDATA);
 		}
