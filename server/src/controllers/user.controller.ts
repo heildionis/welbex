@@ -48,9 +48,13 @@ export class UserController {
 	): Promise<Response | void> {
 		try {
 			const { username, password } = req.body;
-			if (!username || !password) {
+			const errors = validationResult(req);
+			if (!errors.isEmpty()) {
 				return next(
-					ApiError.badRequest(ValidationErrors.VALIDATION_ERROR)
+					ApiError.badRequest(
+						ValidationErrors.VALIDATION_ERROR,
+						errors.array()
+					)
 				);
 			}
 
