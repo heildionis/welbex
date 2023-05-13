@@ -94,22 +94,18 @@ const AuthForm: FC<AuthFormProps> = memo((props: AuthFormProps) => {
 								size='large'
 								placeholder='Введите имя пользователя...'
 								type='text'
-								required
-								minLength={8}
 								formNoValidate
 							/>
 						</Col>
 						<Col span={24}>
 							<Typography>Пароль</Typography>
 							<Input
-								required
 								disabled={isLoading}
 								value={password}
 								onChange={onChangePassword}
 								type='password'
 								size='large'
 								placeholder='Введите пароль...'
-								minLength={8}
 								formNoValidate
 							/>
 						</Col>
