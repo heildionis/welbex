@@ -119,6 +119,9 @@ const AuthForm: FC<AuthFormProps> = memo((props: AuthFormProps) => {
 						className={cls.btn}
 						size='large'
 						type='primary'
+						disabled={
+							password?.length === 0 || username?.length === 0
+						}
 						loading={isLoading}
 					>
 						{type === 'login' ? 'Войти' : 'Зарегистрироваться'}
