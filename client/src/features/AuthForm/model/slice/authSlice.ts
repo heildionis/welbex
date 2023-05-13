@@ -1,13 +1,13 @@
 import { PayloadAction, createSlice } from '@reduxjs/toolkit';
 
 import { authByUsername } from '../services/authByUsername';
-import { AuthSchema } from '../types/authSchema';
+import { AuthError, AuthSchema } from '../types/authSchema';
 
 const initialState: AuthSchema = {
 	username: '',
 	password: '',
 	isLoading: false,
-	error: '',
+	error: {} as AuthError,
 };
 
 export const authSlice = createSlice({

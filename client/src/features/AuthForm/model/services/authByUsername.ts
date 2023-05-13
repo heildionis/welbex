@@ -4,8 +4,9 @@ import {
 	authByUsernameMutation,
 	registerByUsernameMutation,
 } from '../../api/authApi';
+import { AuthEnum } from '../../constants/authErrors';
 import { getAuthUsername, getAuthPassword } from '../selectors/authSelectors';
-import { AuthType } from '../types/authSchema';
+import { AuthError, AuthType } from '../types/authSchema';
 
 import { ThunkConfig } from '@/app/providers/StoreProvider';
 import { UserResponse, userActions } from '@/entities/User';
@@ -18,7 +19,7 @@ interface AuthByUsernameArg {
 export const authByUsername = createAsyncThunk<
 	UserResponse,
 	AuthByUsernameArg,
-	ThunkConfig<string>
+	ThunkConfig<AuthError>
 >('auth/authByUsername', async ({ type }, thunkApi) => {
 	const { dispatch, rejectWithValue, getState } = thunkApi;
 
@@ -26,7 +27,7 @@ export const authByUsername = createAsyncThunk<
 	const password = getAuthPassword(getState());
 
 	if (!username || !password) {
-		throw rejectWithValue('error');
+		throw rejectWithValue({ status: 400, data: AuthEnum.VALIDATION_ERROR });
 	}
 
 	try {
