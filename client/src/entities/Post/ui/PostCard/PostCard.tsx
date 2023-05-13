@@ -41,6 +41,7 @@ export const PostCard: FC<PostCardProps> = memo((props: PostCardProps) => {
 					]}
 				>
 					<Input.TextArea
+						defaultValue={post.message}
 						value={post.message}
 						onChange={onChangeMessage}
 						className={cls.inputMsg}
