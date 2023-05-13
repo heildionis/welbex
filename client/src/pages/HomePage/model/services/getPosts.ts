@@ -16,7 +16,7 @@ export const getPosts = createAsyncThunk<
 	const { extra, rejectWithValue } = thunkApi;
 	try {
 		const response = await extra.api.get<Post[]>('/posts');
-		console.log(response.data);
+
 		if (!response.data) {
 			throw rejectWithValue('error');
 		}
