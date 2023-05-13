@@ -36,6 +36,7 @@ export const PostCard: FC<PostCardProps> = memo((props: PostCardProps) => {
 			return (
 				<Form.Item
 					name='message'
+					initialValue={post.message}
 					rules={[
 						{ required: true, message: 'Введите текст записи!' },
 					]}
