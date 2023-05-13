@@ -13,10 +13,12 @@ import {
 import Title from 'antd/es/typography/Title';
 import { ChangeEvent, FC, memo, useCallback } from 'react';
 
+import { AuthEnum } from '../../constants/authErrors';
 import {
 	useAuthUsername,
 	useAuthPassword,
 	useAuthIsLoading,
+	useAuthError,
 } from '../../model/selectors/authSelectors';
 import { authByUsername } from '../../model/services/authByUsername';
 import { authActions, authReducer } from '../../model/slice/authSlice';
@@ -47,6 +49,7 @@ const AuthForm: FC<AuthFormProps> = memo((props: AuthFormProps) => {
 	const username = useAuthUsername();
 	const password = useAuthPassword();
 	const isLoading = useAuthIsLoading();
+	const error = useAuthError();
 
 	const onChangeUsername = useCallback(
 		(e: ChangeEvent<HTMLInputElement>) => {
@@ -91,13 +94,13 @@ const AuthForm: FC<AuthFormProps> = memo((props: AuthFormProps) => {
 								size='large'
 								placeholder='Введите имя пользователя...'
 								type='text'
+								required
 							/>
-							{/* Клиента замена не устраивает так как цена выше, если я ему из 8кг положу 1, */}
-							{/* то у него не пройдет промокод , который он хочет юзнуть, у меня уже смена закончилась */}
 						</Col>
 						<Col span={24}>
 							<Typography>Пароль</Typography>
 							<Input
+								required
 								disabled={isLoading}
 								value={password}
 								onChange={onChangePassword}
@@ -107,6 +110,7 @@ const AuthForm: FC<AuthFormProps> = memo((props: AuthFormProps) => {
 							/>
 						</Col>
 					</Row>
+					{error && <Typography>{AuthEnum[error.data]}</Typography>}
 					<Divider />
 					<Button
 						onClick={onAuthClick}

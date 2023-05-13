@@ -47,8 +47,7 @@ export const authByUsername = createAsyncThunk<
 		localStorage.setItem(TOKEN_LOCALSTORAGE_KEY, accessToken);
 
 		return response;
-	} catch (error) {
-		console.log(error);
-		return rejectWithValue('error');
+	} catch (error: any) {
+		return rejectWithValue(error);
 	}
 });
