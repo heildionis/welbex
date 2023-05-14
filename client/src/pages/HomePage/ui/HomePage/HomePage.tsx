@@ -57,7 +57,11 @@ export const HomePage = memo((props: HomePageProps) => {
 			<PostList
 				isLoading={isLoading}
 				renderOptions={renderPostOptions}
-				posts={postsWithCount?.posts.reverse()}
+				posts={
+					postsWithCount?.posts
+						? [...postsWithCount.posts].reverse()
+						: []
+				}
 				className={cls.list}
 			/>
 			<Pagination
